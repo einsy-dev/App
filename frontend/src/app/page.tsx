@@ -18,6 +18,7 @@ export default function Home() {
 
   function getRequest() {
     setAllowed(false);
+    setErr({ message: "" });
     $host
       .get("/")
       .then((res) => {
@@ -29,6 +30,7 @@ export default function Home() {
 
   function postRequest() {
     setAllowed(false);
+    setErr({ message: "" });
     $host
       .post("/")
       .then((res) => {
