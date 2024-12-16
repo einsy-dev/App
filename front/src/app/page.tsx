@@ -14,22 +14,27 @@ const $host = axios.create({
 export default function Home() {
   const [state, setState] = useState({ get: "", post: "" });
   const [err, setErr] = useState({ message: "" });
+  const [allowed, setAllowed] = useState(true);
 
   function getRequest() {
+    setAllowed(false);
     $host
       .get("/")
       .then((res) => {
         setState((prev) => ({ ...prev, get: res.data }));
       })
+      .finally(() => setAllowed(true))
       .catch(setErr);
   }
 
   function postRequest() {
+    setAllowed(false);
     $host
       .post("/")
       .then((res) => {
         setState((prev) => ({ ...prev, post: res.data }));
       })
+      .finally(() => setAllowed(true))
       .catch(setErr);
   }
 
@@ -42,17 +47,18 @@ export default function Home() {
         <p>err: {err.message}</p>
       </div>
       <div className="flex flex-row gap-5 justify-center">
-        <Button text="GET" onClick={getRequest} />
-        <Button text="POST" onClick={postRequest} />
+        <Button text="GET" onClick={getRequest} disabled={!allowed} />
+        <Button text="POST" onClick={postRequest} disabled={!allowed} />
       </div>
     </div>
   );
 }
 
-function Button({ text, onClick }: { text: string; onClick: () => void }) {
+function Button({ text, disabled, onClick }: { text: string; disabled?: boolean; onClick: () => void }) {
   return (
     <button
-      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
+      disabled={disabled}
       onClick={onClick}
     >
       {text}
